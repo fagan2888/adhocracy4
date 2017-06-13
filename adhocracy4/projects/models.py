@@ -172,3 +172,6 @@ class Project(base.TimeStampedModel):
     @property
     def is_archivable(self):
         return not self.is_archived and self.has_finished
+
+    def get_phase_by_weight(self, weight):
+        return self.phases.filter(weight=weight).first()

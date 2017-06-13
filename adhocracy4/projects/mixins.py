@@ -12,7 +12,15 @@ class PhaseDispatchMixin(generic.DetailView):
         """
         project = self.get_object()
 
-        if project.active_phase:
+        try:
+            weight = self.request.GET.get('phase')
+            phase = project.get_phase_by_weight(weight)
+        except ValueError:
+            phase = None
+
+        if phase:
+            return  phase.view.as_view()
+        elif project.active_phase:
             return project.active_phase.view.as_view()
         elif project.past_phases:
             return project.past_phases[0].view.as_view()
@@ -23,7 +31,20 @@ class PhaseDispatchMixin(generic.DetailView):
 class ProjectMixin(generic.base.ContextMixin):
     def dispatch(self, *args, **kwargs):
         self.project = kwargs['project']
-        self.phase = self.project.active_phase or self.project.past_phases[0]
+
+        try:
+            weight = self.request.GET.get('phase')
+            phase = self.project.get_phase_by_weight(weight)
+        except ValueError:
+            phase = None
+
+        if phase:
+            self.phase = phase
+        elif self.project.active_phase:
+            self.phase = self.project.active_phase
+        else:
+            self.phase = self.project.past_phases[0]
+
         self.module = self.phase.module if self.phase else None
         self.request.module = self.module
         return super(ProjectMixin, self).dispatch(*args, **kwargs)
