@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'adhocracy4.maps.apps.MapsConfig',
     'adhocracy4.actions.apps.ActionsConfig',
     'adhocracy4.follows.apps.FollowsConfig',
+    'adhocracy4.filters.apps.FiltersConfig',
 
     # adhocrayc4 generic apps
     'adhocracy4.ratings.apps.RatingsConfig',
@@ -51,6 +52,7 @@ INSTALLED_APPS = (
     # mandatory third party apps
     'easy_thumbnails',
     'rules.apps.AutodiscoverRulesConfig',
+    'background_task',
 
     'django.contrib.admin',
     'django.contrib.auth',
