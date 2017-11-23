@@ -1,5 +1,6 @@
 from itertools import chain
 
+import django
 import django_filters
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.forms import TextInput
@@ -43,7 +44,13 @@ class DropdownLinkWidget(django_filters.widgets.LinkWidget):
             value = all_choices[0][0]
 
         _id = attrs.pop('id')
-        final_attrs = flatatt(self.build_attrs(attrs))
+
+        if django.VERSION < (1, 11):
+            final_attrs = self.build_attrs(attrs)
+        else:
+            final_attrs = self.build_attrs(self.attrs, extra_attrs=attrs)
+        _class = final_attrs.pop('class', '')
+
         value_label = self.get_option_label(value, choices=choices)
 
         options = super().render(name, value, attrs={
@@ -54,7 +61,8 @@ class DropdownLinkWidget(django_filters.widgets.LinkWidget):
         return render_to_string(self.template, {
             'options': options,
             'id': _id,
-            'attrs': final_attrs,
+            'class': _class,
+            'attrs': flatatt(final_attrs),
             'value_label': value_label,
             'label': self.label,
             'right': self.right,
@@ -89,8 +97,16 @@ class FreeTextFilterWidget(TextInput):
 
         _id = attrs.pop('id')
 
+        if django.VERSION < (1, 11):
+            final_attrs = self.build_attrs(attrs)
+        else:
+            final_attrs = self.build_attrs(self.attrs, extra_attrs=attrs)
+        _class = final_attrs.pop('class', '')
+
         return render_to_string(self.template, {
             'id': _id,
+            'class': _class,
+            'attrs': flatatt(final_attrs),
             'value': value,
             'name': name,
             'label': self.label,
