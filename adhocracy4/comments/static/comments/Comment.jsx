@@ -8,6 +8,7 @@ var CommentManageDropdown = require('./CommentManageDropdown')
 var React = require('react')
 var PropTypes = require('prop-types')
 var django = require('django')
+var Linkify = require('react-linkify')
 
 var safeHtml = function (text) {
   return { __html: text }
@@ -110,7 +111,7 @@ class Comment extends React.Component {
         />
       )
     } else {
-      comment = <div className="comment-text" dangerouslySetInnerHTML={safeHtml(this.props.children)} />
+      comment = <Linkify><div className="comment-text" dangerouslySetInnerHTML={safeHtml(this.props.children)} /></Linkify>
     }
     return comment
   }
